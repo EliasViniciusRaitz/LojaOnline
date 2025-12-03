@@ -1,94 +1,100 @@
-import React from "react";
-import {
-  ShoppingCartOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import logo from "../assets/logoLojaOnline.png"; 
+import React, { useState } from "react";
+import { ShoppingCartOutlined, SearchOutlined } from "@ant-design/icons";
+import logo from "../assets/logoLojaOnline.png";
 import RefIcon from "@ant-design/icons/lib/icons/DoubleRightOutlined";
+import { CartDrawer } from "./CartDrawer";
+import { useCart } from "../context/CartContext";
 
 export const Header: React.FC = () => {
-  return (
-    <header
-      style={{
-        background: "#e6f4ff",
-        padding: "0.8rem 2rem",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      {/* Logo + Home */}
-      <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-        <img src={logo} alt="Logo" style={{ height: "40px" }} />
-        <a href="/" style={{ color: "#040404ff", fontSize: "1rem" }}> Home
-        </a>
-        <a href="/products" style={{ color: "#070707ff", fontSize: "1rem" }}>Products
-        </a>
-        <a href="/clients" style={{ color: "#070707ff", fontSize: "1rem" }}> Clients
-        </a>
-      </div>
+  const [open, setOpen] = useState(false);
+  const { cart } = useCart();
 
-      {/* Barra de busca */}
-      <div
+  return (
+    <>
+      <header
         style={{
-          flex: 1,
+          background: "#e6f4ff",
+          padding: "0.8rem 2rem",
           display: "flex",
-          justifyContent: "center",
-          margin: "0 2rem",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
+        {/* Logo + Home */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          <img src={logo} alt="Logo" style={{ height: "40px" }} />
+          <a href="/" style={{ color: "#040404ff", fontSize: "1rem" }}>Home</a>
+          <a href="/products" style={{ color: "#070707ff", fontSize: "1rem" }}>Products</a>
+          <a href="/clients" style={{ color: "#070707ff", fontSize: "1rem" }}>Clients</a>
+        </div>
+
+        {/* Barra de busca */}
         <div
           style={{
+            flex: 1,
             display: "flex",
-            alignItems: "center",
-            background: "#fff",
-            borderRadius: "20px",
-            padding: "0.3rem 1rem",
-            width: "60%",
-            boxShadow: "0 1px 4px rgba(7, 7, 7, 0.1)",
+            justifyContent: "center",
+            margin: "0 2rem",
           }}
         >
-          <input
-            type="text"
-            placeholder="Pesquisar"
+          <div
             style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              fontSize: "1rem",
-              backgroundColor: "#ffffffff",
-              color: "#000000de",
+              display: "flex",
+              alignItems: "center",
+              background: "#fff",
+              borderRadius: "20px",
+              padding: "0.3rem 1rem",
+              width: "60%",
+              boxShadow: "0 1px 4px rgba(7, 7, 7, 0.1)",
             }}
-          />
-          <SearchOutlined style={{ color: "#1677ff", fontSize: "18px" }} />
+          >
+            <input
+              type="text"
+              placeholder="Pesquisar"
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                fontSize: "1rem",
+                backgroundColor: "#ffffffff",
+                color: "#000000de",
+              }}
+            />
+            <SearchOutlined style={{ color: "#1677ff", fontSize: "18px" }} />
+          </div>
         </div>
-      </div>
 
-      {/* Login + Cart */}
-      <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-        <a
-          href="#"
-          style={{
-            color: "#070707ff",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.3rem",
-          }}
-        >
-          <RefIcon /> Login
-        </a>
-        <a
-          href="#"
-          style={{
-            color: "#070707ff",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.3rem",
-          }}
-        >
-          <ShoppingCartOutlined /> Cart
-        </a>
-      </nav>
-    </header>
+        {/* Login + Cart */}
+        <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <a
+            href="#"
+            style={{
+              color: "#070707ff",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3rem",
+            }}
+          >
+            <RefIcon /> Login
+          </a>
+
+          {/* Abre Drawer */}
+          <a
+            onClick={() => setOpen(true)}
+            style={{
+              cursor: "pointer",
+              color: "#070707ff",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3rem",
+            }}
+          >
+            <ShoppingCartOutlined /> Cart ({cart.length})
+          </a>
+        </nav>
+      </header>
+
+      <CartDrawer open={open} onClose={() => setOpen(false)} />
+    </>
   );
 };

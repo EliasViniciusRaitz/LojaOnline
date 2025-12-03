@@ -19,21 +19,23 @@ import {
   ShoppingCartOutlined,
   EditOutlined,
   DeleteOutlined,
+  EyeFilled,
 } from "@ant-design/icons";
+
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../store";
+
 import { getProducts } from "../services/products";
+import { addProduct, updateProduct, deleteProduct } from "../store/productSlice";
+
 import type { Product } from "../types/index";
 import { ProductEditDrawer } from "../components/ProductEditDrawer";
 import { NewProductModal } from "../components/NewProductModal";
-import {
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from "../store/productSlice";
 
-import { EyeFilled } from "@ant-design/icons";
 import defaultProductImg from "../assets/default-product.png";
+
+// IMPORTANTE: Carrinho
+import { useCart } from "../context/CartContext";
 
 const { Title, Paragraph, Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -41,19 +43,22 @@ const { Search } = Input;
 
 export const ProductsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const reduxProducts = useSelector((s: RootState) => s.products); // Seus produtos locais
+  const reduxProducts = useSelector((s: RootState) => s.products);
+
   const [apiProducts, setApiProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Estados dos Modals
   const [modalOpen, setModalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
-  
+
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Hook para detectar tamanho da tela (para ajustes finos se precisar)
+
   const screens = useBreakpoint();
+
+  // ✔ Carrinho atualizado
+  const { addItem } = useCart();
 
   useEffect(() => {
     setLoading(true);
@@ -69,7 +74,7 @@ export const ProductsPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Mescla produtos locais (Redux) com API
+  // Mescla API + produtos locais
   const mergedProducts = useMemo(
     () => [...reduxProducts, ...apiProducts],
     [reduxProducts, apiProducts]
@@ -83,10 +88,19 @@ export const ProductsPage: React.FC = () => {
     dispatch(addProduct(p));
   };
 
-  const handleBuy = (p: Product) => {
+  // ✔ BUY → adiciona ao carrinho COM addItem
+  const handleBuy = (product: Product) => {
+    addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
+
     notification.success({
-      title: "Produto adicionado ao carrinho!",
-      description: `${p.title} foi incluído com sucesso.`,
+      title: "Adicionado ao carrinho!",
+      description: `${product.title} foi incluído com sucesso.`,
     });
   };
 
@@ -97,62 +111,56 @@ export const ProductsPage: React.FC = () => {
 
   const handleSaveEdit = (p: Product) => {
     dispatch(updateProduct(p));
-    notification.success({ title: "Produto atualizado com sucesso!" });
+    notification.success({
+      title: "Produto atualizado com sucesso!",
+    });
   };
 
   const handleDelete = (id: number | string) => {
     dispatch(deleteProduct(id));
-    notification.success({ title: "Produto excluído com sucesso!" });
+    notification.success({
+      title: "Produto excluído com sucesso!",
+    });
   };
 
   return (
-    <div style={{ padding: screens.xs ? 16 : 24 }}> 
-        
-        {/* CABEÇALHO REORGANIZADO: Título, Busca e Botão na mesma linha (desktop) */}
-        <Row 
-            justify="space-between" 
-            align="middle" 
-            style={{ marginBottom: 32 }} /* Aumentei a margem inferior */
-            gutter={[16, 16]} // Espaçamento entre colunas
-        >
-            {/* COLUNA 1: Título "List of Products" (Ocupa 24 no mobile, 8 no desktop) */}
-            <Col xs={24} sm={8} md={6}>
-                <Title level={3} style={{ margin: 0 }}>
-                    List of Products
-                </Title>
-            </Col>
+    <div style={{ padding: screens.xs ? 16 : 24 }}>
+      {/* Cabeçalho com busca e botão */}
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ marginBottom: 32 }}
+        gutter={[16, 16]}
+      >
+        <Col xs={24} sm={8} md={6}>
+          <Title level={3} style={{ margin: 0 }}>
+            List of Products
+          </Title>
+        </Col>
 
-            {/* COLUNA 2: BARRA DE BUSCA (Ocupa 24 no mobile, 10 no desktop) */}
-            <Col xs={24} sm={8} md={10} style={{ 
-                textAlign: 'center', 
-                order: screens.xs ? 3 : 0
-            }}>
-                <Search
-                    placeholder="Buscar produto"
-                    allowClear
-                    enterButton="Buscar"
-                    size="large"
-                    onSearch={(value) => setSearchTerm(value)}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ width: "100%" }}
-                />
-            </Col>
-            
-            {/* COLUNA 3: Botão "New Product" (Ocupa 24 no mobile, 6 no desktop) */}
-            <Col xs={24} sm={8} md={8} style={{ 
-                textAlign: screens.sm ? 'right' : 'left',
-                order: screens.xs ? 2 : 0 
-            }}>
-                <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => setModalOpen(true)}
-                    block={screens.xs} // Botão ocupa largura total no mobile
-                >
-                    New Product
-                </Button>
-            </Col>
-        </Row>
+        <Col xs={24} sm={8} md={10} style={{ textAlign: "center" }}>
+          <Search
+            placeholder="Buscar produto"
+            allowClear
+            enterButton="Buscar"
+            size="large"
+            onSearch={(value) => setSearchTerm(value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: "100%" }}
+          />
+        </Col>
+
+        <Col xs={24} sm={8} md={8} style={{ textAlign: "right" }}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setModalOpen(true)}
+            block={screens.xs}
+          >
+            New Product
+          </Button>
+        </Col>
+      </Row>
 
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center", padding: 60 }}>
@@ -160,17 +168,16 @@ export const ProductsPage: React.FC = () => {
         </div>
       ) : (
         <List
-          grid={{ 
-            gutter: 24, 
-            xs: 1,   
-            sm: 2,   
-            md: 2,   
-            lg: 3,   
-            xl: 4,   
-            xxl: 5   
+          grid={{
+            gutter: 24,
+            xs: 1,
+            sm: 2,
+            md: 2,
+            lg: 3,
+            xl: 4,
+            xxl: 5,
           }}
           dataSource={filteredProducts}
-          locale={{ emptyText: "Nenhum produto encontrado" }}
           renderItem={(item) => (
             <List.Item>
               <div
@@ -178,47 +185,60 @@ export const ProductsPage: React.FC = () => {
                   border: "1px solid #f0f0f0",
                   borderRadius: 8,
                   padding: 16,
-                  height: "100%",
-                  minHeight: 450, // Altura mínima para alinhar os cards
+                  minHeight: 450,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between",
                   background: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
                 }}
               >
-                {/* Imagem + Infos Principais */}
+                {/* imagem + info */}
                 <div>
-                    <div style={{ textAlign: 'center' }}>
-                        <Image
-                        src={item.image}
-                        alt={item.title}
-                        fallback={defaultProductImg} // Usa a imagem importada
-                        style={{
-                            objectFit: "contain",
-                            height: 160,
-                            marginBottom: 12,
-                            borderRadius: 8,
-                        }}
-                        preview={{ mask: <EyeFilled style={{ fontSize: 20 }} /> }}
-                        />
-                    </div>
-                    
-                    <Title level={5} ellipsis={{ rows: 2 }} style={{ marginBottom: 8, minHeight: 45 }}>
+                  <div style={{ textAlign: "center" }}>
+                    <Image
+                      src={item.image}
+                      fallback={defaultProductImg}
+                      alt={item.title}
+                      style={{
+                        objectFit: "contain",
+                        height: 160,
+                        marginBottom: 12,
+                        borderRadius: 8,
+                      }}
+                      preview={{ mask: <EyeFilled style={{ fontSize: 20 }} /> }}
+                    />
+                  </div>
+
+                  <Title
+                    level={5}
+                    ellipsis={{ rows: 2 }}
+                    style={{ minHeight: 45 }}
+                  >
                     {item.title}
-                    </Title>
-                    
-                    <Paragraph ellipsis={{ rows: 3 }} style={{ color: '#666', fontSize: '14px', minHeight: 65 }}>
+                  </Title>
+
+                  <Paragraph
+                    ellipsis={{ rows: 3 }}
+                    style={{ color: "#666", minHeight: 65 }}
+                  >
                     {item.description}
-                    </Paragraph>
-                    
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                    <Rate disabled allowHalf value={item.rating?.rate ?? 0} style={{ fontSize: 14 }} />
-                    <Text type="secondary" style={{ fontSize: 12 }}>({item.rating?.count ?? 0})</Text>
-                    </div>
+                  </Paragraph>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 16,
+                    }}
+                  >
+                    <Rate disabled allowHalf value={item.rating?.rate ?? 0} />
+                    <Text type="secondary">
+                      ({item.rating?.count ?? 0})
+                    </Text>
+                  </div>
                 </div>
 
-                {/* Preço e Botões (Fixo no fundo do card) */}
+                {/* rodapé */}
                 <div
                   style={{
                     marginTop: "auto",
@@ -227,34 +247,33 @@ export const ProductsPage: React.FC = () => {
                     gap: 12,
                   }}
                 >
-                  <Text strong style={{ fontSize: 18, color: '#040404ff' }}>
+                  <Text strong style={{ fontSize: 18 }}>
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
                     }).format(item.price)}
                   </Text>
-                  
+
+                  {/* ✔ BUY */}
                   <Button
                     type="primary"
                     block
                     icon={<ShoppingCartOutlined />}
                     onClick={() => handleBuy(item)}
-                    style={{ fontWeight: 600 }}
                   >
                     BUY
                   </Button>
-                  
-                  {/* Botões de Ação (Só aparecem se o produto tiver ID não numérico, ou seja, local) 
-                      Ou remova a verificação se quiser editar todos */}
-                  <Space style={{ justifyContent: "center", width: '100%' }}>
+
+                  <Space style={{ justifyContent: "center" }}>
                     <Button
                       icon={<EditOutlined />}
                       onClick={() => openEdit(item)}
                     >
                       Edit
                     </Button>
+
                     <Popconfirm
-                      title="Tem certeza que deseja excluir?"
+                      title="Deseja realmente excluir?"
                       onConfirm={() => handleDelete(item.id)}
                       okText="Sim"
                       cancelText="Não"
@@ -271,7 +290,7 @@ export const ProductsPage: React.FC = () => {
         />
       )}
 
-      {/* Drawers e Modals */}
+      {/* Modals */}
       <ProductEditDrawer
         open={editOpen}
         product={productToEdit}
@@ -281,6 +300,7 @@ export const ProductsPage: React.FC = () => {
         }}
         onSave={handleSaveEdit}
       />
+
       <NewProductModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -292,6 +312,5 @@ export const ProductsPage: React.FC = () => {
     </div>
   );
 };
-
 
 export default ProductsPage;

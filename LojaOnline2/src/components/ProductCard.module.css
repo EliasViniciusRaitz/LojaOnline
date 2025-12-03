@@ -1,0 +1,58 @@
+/* components/ProductCard.module.css */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 220px;
+  text-align: center;
+  background: #fff;
+  /* CORREÇÕES PARA UNIFORMIZAR O TAMANHO E O ALINHAMENTO */
+  min-height: 400px; /* Define uma altura mínima para todos os cards */
+  display: flex; 
+  flex-direction: column; /* Organiza o conteúdo verticalmente */
+  justify-content: space-between; /* Empurra o preço e o ícone para baixo */
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #000; /* Força a cor preta no tema claro */
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  /* Garante que o texto possa quebrar em várias linhas */
+  white-space: normal; 
+  /* Adicional: Garante que o texto cortado seja exibido se for longo demais */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.5rem 0 1rem; /* Aumenta margem abaixo da descrição */
+  
+  /* CORREÇÃO PARA LIMITAR A DUAS LINHAS (Ellipsis) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limita o texto a 2 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1; /* Permite que ocupe o espaço restante antes do preço */
+}
+
+.price {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: auto; /* Garante que o preço e o ícone fiquem no final */
+}
+/* O h3 (título) não precisa de classe, mas garantimos que não tenha restrições de altura. */

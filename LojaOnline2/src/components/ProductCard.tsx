@@ -1,0 +1,47 @@
+import React from "react";
+import { Image, notification } from "antd";
+import { EyeFilled } from "@ant-design/icons";
+import type { Product } from "../types/index";
+import styles from "./ProductCard.module.css";
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const openErrorNotification = () => {
+    notification.error({
+      title: "Erro ao visualizar",
+      description: "Não foi possível carregar os detalhes do produto.",
+      placement: "topRight",
+    });
+  };
+
+  return (
+    <div className={styles.card}>
+      <Image
+        src={product.image}
+        alt={product.title}
+        width={150}
+        height={150}
+        style={{ objectFit: "contain" }}
+        preview={true}
+      />
+      
+      {/* O título (h3) é flexível */}
+      <h3>{product.title}</h3>
+      
+      {/* CORREÇÃO: Removido o substring. O CSS vai limitar para 2 linhas. */}
+      <p className={styles.description}>
+        {product.description}
+      </p>
+      
+      <p className={styles.price}>R$ {product.price}</p>
+      
+      <EyeFilled
+        style={{ fontSize: "20px", color: "#8c8c8c", cursor: "pointer", marginTop: 'auto', alignSelf: "center"}} /* Adicionado marginTop para garantir alinhamento */
+        onClick={openErrorNotification}
+      />
+    </div>
+  );
+};

@@ -24,6 +24,8 @@ export const Header: React.FC = () => {
         </a>
         <a href="/products" style={{ color: "#070707ff", fontSize: "1rem" }}>Products
         </a>
+        <a href="/clients" style={{ color: "#070707ff", fontSize: "1rem" }}> Clients
+        </a>
       </div>
 
       {/* Barra de busca */}

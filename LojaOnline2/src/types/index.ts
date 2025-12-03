@@ -10,18 +10,27 @@ export interface Address {
 
 // Tipagem para o Cliente (Baseado na API de Users + Requisitos do trabalho)
 export interface Client {
-  id: number;
+  id: number | string;
   email: string;
+  username: string;
+  password?: string; // Opcional, não vamos usar, mas está na API
   name: {
     firstname: string;
     lastname: string;
   };
+  address: {
+    geolocation: {
+      lat: string;
+      long: string;
+    };
+    city: string;
+    street: string;
+    number: number;
+    zipcode: string;
+  };
   phone: string;
-  address: Address;
-  // Campos adicionais dos requisitos:
-  createdAt: string; // Data formatada que vamos gerar
-  status: 'activated' | 'deactivated'; // Para o componente Tag
-  isLocal?: boolean; // Para identificar clientes cadastrados via Modal
+  createdAt: string; // Adicionaremos esta propriedade na busca da API para ordenação
+  status: "activated" | "deactivated"; // Adicionaremos esta propriedade
 }
 
 // Reutilizamos o tipo Product da Atividade I e II

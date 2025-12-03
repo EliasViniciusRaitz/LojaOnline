@@ -1,5 +1,3 @@
-// serviço simples para buscar produtos da API pública (ou sua API)
-// exporte getProducts() que retorna Promise<Product[]>
 import type { Product } from "../types/index";
 
 const API = "https://fakestoreapi.com/products";

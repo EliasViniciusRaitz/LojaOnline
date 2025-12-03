@@ -1,3 +1,4 @@
+// src/components/NewProductModal.tsx
 import React from "react";
 import {
   Modal,
@@ -10,6 +11,8 @@ import {
   theme,
 } from "antd";
 import type { Product } from "../types/index";
+
+import defaultProductImg from "../assets/default-product.png"; 
 
 const { useToken } = theme;
 
@@ -28,13 +31,16 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
   const { token } = useToken();
 
   const handleFinish = (values: any) => {
+
+    const finalImage = values.image ? values.image : defaultProductImg;
+
     const newProduct: Product = {
       id: `local-${Date.now()}`,
       title: values.title,
       description: values.description,
       price: Number(values.price),
-      image: values.image || "/assets/logo.png",
-      rating: { rate: 4.5, count: 0 },
+      image: finalImage, 
+      rating: { rate: 0, count: 0 }, 
       category: values.category || "uncategorized",
     };
 
@@ -58,14 +64,12 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
       footer={null}
       maskClosable={false}
       keyboard={false}
-      destroyOnHidden
-      styles={{ body: { borderRadius: token.borderRadiusLG } }}
+      destroyOnClose
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={{}}
       >
         <Form.Item
           name="title"
@@ -74,7 +78,7 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
         >
           <Input placeholder="Ex: Fancy Jacket" />
         </Form.Item>
-
+        
         <Form.Item
           name="description"
           label="Description"
@@ -82,7 +86,7 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
         >
           <Input.TextArea rows={4} placeholder="Product description..." />
         </Form.Item>
-
+        
         <Form.Item
           name="category"
           label="Category"
@@ -95,7 +99,7 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
             <Select.Option value="uncategorized">Uncategorized</Select.Option>
           </Select>
         </Form.Item>
-
+        
         <Form.Item
           name="price"
           label="Price"
@@ -109,15 +113,14 @@ export const NewProductModal: React.FC<NewProductModalProps> = ({
             prefix="R$"
           />
         </Form.Item>
-
         <Form.Item
           name="image"
-          label="Image"
+          label="Image URL (Optional)"
           rules={[{ type: "url", warningOnly: true }]}
         >
-          <Input placeholder="https://image-url.com" />
+          <Input placeholder="Leave empty for default image" />
         </Form.Item>
-
+        
         <Form.Item style={{ textAlign: "right", marginTop: 24 }}>
           <Button
             onClick={() => {

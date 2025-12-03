@@ -28,10 +28,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         preview={true}
       />
       
-      {/* O título (h3) é flexível */}
       <h3>{product.title}</h3>
       
-      {/* CORREÇÃO: Removido o substring. O CSS vai limitar para 2 linhas. */}
       <p className={styles.description}>
         {product.description}
       </p>

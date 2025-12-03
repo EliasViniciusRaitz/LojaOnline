@@ -1,4 +1,3 @@
-// src/components/ProductEditDrawer.tsx
 import React, { useEffect } from "react";
 import { Drawer, Form, Input, InputNumber, Button, Image } from "antd";
 import type { Product } from "../types/index";

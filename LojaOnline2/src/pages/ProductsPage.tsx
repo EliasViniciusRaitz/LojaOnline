@@ -34,7 +34,6 @@ import { NewProductModal } from "../components/NewProductModal";
 
 import defaultProductImg from "../assets/default-product.png";
 
-// IMPORTANTE: Carrinho
 import { useCart } from "../context/CartContext";
 
 const { Title, Paragraph, Text } = Typography;
@@ -48,7 +47,6 @@ export const ProductsPage: React.FC = () => {
   const [apiProducts, setApiProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Estados dos Modals
   const [modalOpen, setModalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
@@ -57,7 +55,6 @@ export const ProductsPage: React.FC = () => {
 
   const screens = useBreakpoint();
 
-  // ✔ Carrinho atualizado
   const { addItem } = useCart();
 
   useEffect(() => {

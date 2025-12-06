@@ -21,12 +21,10 @@ body,
   height: 100%;
 }
 
-/* Remova qualquer max-width no root */
 #root {
-  text-align: left; /* ou center se desejar */
+  text-align: left; 
 }
 
-/* Remova centralização via flex no body do template do Vite */
 body {
   min-width: 320px;
   min-height: 100vh;

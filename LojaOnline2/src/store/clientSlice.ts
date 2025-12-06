@@ -31,31 +31,28 @@ export const clientSlice = createSlice({
   name: "clients",
   initialState,
   reducers: {
-    // Tipagem: action: { payload: Client }
+
     addClient(state, action: { payload: Client }) {
       state.unshift(action.payload);
       save(state);
     },
-    // Tipagem: action: { payload: Client }
+
     updateClient(state, action: { payload: Client }) {
       const idx = state.findIndex((c) => c.id === action.payload.id);
       if (idx >= 0) state[idx] = action.payload;
       save(state);
     },
-    // Tipagem: action: { payload: number | string }
+
     deleteClient(state, action: { payload: number | string }) {
       const id = action.payload;
       const updated = state.filter((c) => c.id !== id);
       save(updated);
       return updated;
     },
-    // Tipagem: action: { payload: Client[] }
+
     setClients(state, action: { payload: Client[] }) {
       const apiClients = action.payload;
       const localClients = loadInitial();
-
-      // Mescla clientes da API com os locais, evitando que a API sobrescreva
-      // clientes locais com o mesmo ID (embora improvável, é seguro).
       const finalClients = [
         ...localClients,
         ...apiClients.filter(

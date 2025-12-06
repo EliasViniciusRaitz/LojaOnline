@@ -1,13 +1,12 @@
-// src/store/index.ts (APENAS A PARTE DA CONFIGURAÇÃO)
+
 import { configureStore } from "@reduxjs/toolkit";
 import productReducer from "./productSlice";
-import clientReducer from "./clientSlice"; // NOVO
+import clientReducer from "./clientSlice"; 
 
 export const store = configureStore({
   reducer: {
     products: productReducer,
-    clients: clientReducer, // NOVO
-    // theme: themeReducer, // Será adicionado no futuro
+    clients: clientReducer, 
   },
 });
 

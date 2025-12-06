@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <p className={styles.price}>R$ {product.price}</p>
       
       <EyeFilled
-        style={{ fontSize: "20px", color: "#8c8c8c", cursor: "pointer", marginTop: 'auto', alignSelf: "center"}} /* Adicionado marginTop para garantir alinhamento */
+        style={{ fontSize: "20px", color: "#8c8c8c", cursor: "pointer", marginTop: 'auto', alignSelf: "center"}} 
         onClick={openErrorNotification}
       />
     </div>

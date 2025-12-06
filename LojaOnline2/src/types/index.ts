@@ -1,4 +1,3 @@
-// src/types/index.ts (Atualizado)
 
 // Tipagem básica para Endereço, pois a API retorna um objeto complexo
 export interface Address {
@@ -29,11 +28,10 @@ export interface Client {
     zipcode: string;
   };
   phone: string;
-  createdAt: string; // Adicionaremos esta propriedade na busca da API para ordenação
-  status: "activated" | "deactivated"; // Adicionaremos esta propriedade
+  createdAt: string; 
+  status: "activated" | "deactivated"; 
 }
 
-// Reutilizamos o tipo Product da Atividade I e II
 export interface Product {
   id: number;
   title: string;
@@ -47,7 +45,6 @@ export interface Product {
   };
 }
 
-// Tipo para o estado do usuário logado (usado no App.tsx)
 export interface User {
   id: number;
   email: string;
